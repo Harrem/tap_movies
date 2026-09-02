@@ -4,6 +4,7 @@ import 'package:tap_movies/controller/home_controller.dart';
 import 'package:tap_movies/controller/movie_controller.dart';
 import 'package:tap_movies/controller/watchlist_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
+import 'package:tap_movies/database/sqlite_helper.dart';
 import 'package:tap_movies/service/api_service.dart';
 
 class AppBindings extends Bindings {
@@ -15,5 +16,6 @@ class AppBindings extends Bindings {
     Get.lazyPut(() => WatchlistController(), fenix: true);
     Get.lazyPut(() => ApiService());
     Get.put(() => ThemeController(), permanent: true);
+    Get.put(SqliteHelper());
   }
 }

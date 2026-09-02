@@ -9,9 +9,16 @@ class HomeController extends GetxController {
   RxList<MovieModel> latestMovies = RxList<MovieModel>();
   final ApiService apiService = Get.find<ApiService>();
 
+  RxString errorMessage = RxString("");
+
   RxBool isLoadingNowPlaying = RxBool(false);
   RxBool isLoadingUpcomingMovies = RxBool(false);
   RxBool isLoadingLatestMovies = RxBool(false);
+  RxBool get isLoadingAll => RxBool(
+    isLoadingNowPlaying.value ||
+        isLoadingUpcomingMovies.value ||
+        isLoadingLatestMovies.value,
+  );
 
   @override
   void onInit() {
@@ -21,10 +28,17 @@ class HomeController extends GetxController {
     fetchLatestMovies();
   }
 
+  Future<void> refreshAll() async {
+    fetchNowPlaying();
+    fetchUpcomingMovies();
+    fetchLatestMovies();
+  }
+
   Future<void> fetchNowPlaying() async {
     isLoadingNowPlaying.value = true;
+    errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 3));
       final response = await apiService.getNowPlayingMovies();
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['results'];
@@ -33,7 +47,7 @@ class HomeController extends GetxController {
         );
       }
     } catch (e) {
-      print(e);
+      errorMessage.value = e.toString();
     } finally {
       isLoadingNowPlaying.value = false;
     }
@@ -41,8 +55,9 @@ class HomeController extends GetxController {
 
   Future<void> fetchUpcomingMovies() async {
     isLoadingUpcomingMovies.value = true;
+    errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 3));
 
       final response = await apiService.getUpcomingMovies();
       if (response.statusCode == 200) {
@@ -52,7 +67,7 @@ class HomeController extends GetxController {
         );
       }
     } catch (e) {
-      print(e);
+      errorMessage.value = e.toString();
     } finally {
       isLoadingUpcomingMovies.value = false;
     }
@@ -60,8 +75,6 @@ class HomeController extends GetxController {
 
   Future<List<BackdropModel>> fetchMovieImages(int movieId) async {
     try {
-      await Future.delayed(Duration(seconds: 10));
-
       final response = await apiService.getMovieImages(movieId);
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['backdrops'];
@@ -75,7 +88,9 @@ class HomeController extends GetxController {
 
   Future<void> fetchLatestMovies() async {
     isLoadingLatestMovies.value = true;
+    errorMessage.value = "";
     try {
+      await Future.delayed(Duration(seconds: 3));
       final response = await apiService.getTopRatedMovies();
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['results'];
@@ -84,7 +99,7 @@ class HomeController extends GetxController {
         );
       }
     } catch (e) {
-      print(e);
+      errorMessage.value = e.toString();
     } finally {
       isLoadingLatestMovies.value = false;
     }

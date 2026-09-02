@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:tap_movies/helpers/dio_error_handler.dart';
 
 class ApiService extends GetxService {
   late Dio dio;
@@ -20,9 +22,15 @@ class ApiService extends GetxService {
     try {
       var response = await dio.get('/movie/top_rated');
       return response;
+    } on DioException catch (e) {
+      debugPrint('Dio Error: ${e.message}');
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
-      rethrow;
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 
@@ -30,9 +38,14 @@ class ApiService extends GetxService {
     try {
       var response = await dio.get('/movie/upcoming');
       return response;
+    } on DioException catch (e) {
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
-      rethrow;
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 
@@ -40,9 +53,14 @@ class ApiService extends GetxService {
     try {
       var response = await dio.get('/movie/now_playing');
       return response;
+    } on DioException catch (e) {
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
-      rethrow;
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 

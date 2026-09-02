@@ -217,12 +217,13 @@ class AppThemes {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.blue,
-          minimumSize: const Size(double.infinity, 52),
+
+          minimumSize: const Size(double.infinity, 40),
 
           side: const BorderSide(color: AppColors.blue),
 
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(30),
           ),
 
           textStyle: GoogleFonts.inter(

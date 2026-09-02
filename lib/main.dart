@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:tap_movies/app_bindings.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
+import 'package:tap_movies/widgets/chrome_connection_wrapper.dart';
 import 'app_routes.dart';
 
 void main() async {
@@ -23,6 +24,11 @@ class MyApp extends StatelessWidget {
         theme: AppThemes.lightTheme,
         darkTheme: AppThemes.darkTheme,
         themeMode: Get.put(ThemeController()).themeMode,
+        builder: (context, child) {
+          return ChromeConnectionWrapper(
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
         initialRoute: AppRoutes.splash,
         getPages: AppRoutes.routes,
         initialBinding: AppBindings(),

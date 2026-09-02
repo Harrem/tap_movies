@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tap_movies/controller/home_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
+import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -21,65 +22,115 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: _drawer(),
-      appBar: AppBar(title: Text('Tap Movies')),
       body: RefreshIndicator(
-        onRefresh: () async {
-          await controller.fetchNowPlaying();
-          await controller.fetchUpcomingMovies();
-          await controller.fetchLatestMovies();
-        },
-        child: ListView(
-          children: [
-            _hero(),
-            SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Upcoming movies',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        onRefresh: () async => await controller.refreshAll(),
+        child: SafeArea(
+          top: false,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Stack(
+                children: [
+                  _hero(),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.7),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16, left: 8),
+                      child: Row(
+                        children: [
+                          // drawer
+                          IconButton(
+                            icon: Icon(Icons.menu, color: Colors.white),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Tap Movies",
+                                style: GoogleFonts.bebasNeue(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "Discover your next favorite movie",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: 10),
-            _upcoming(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Latest Movies',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Upcoming movies',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            _topRated(),
-          ],
+              SizedBox(height: 10),
+              _upcoming(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Latest Movies',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 10),
+              _topRated(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  _hero() {
+  Widget _hero() {
     return Obx(
       () => Skeletonizer(
         enabled: controller.isLoadingNowPlaying.value,
-
         child: CarouselSlider.builder(
           options: CarouselOptions(
-            aspectRatio: 1,
+            height: Get.height * .7,
             viewportFraction: 1.0,
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 3),
             autoPlayAnimationDuration: Duration(milliseconds: 800),
             autoPlayCurve: Curves.easeInOut,
-            enlargeCenterPage: true,
-            onPageChanged: (index, reason) {
-              print(index);
-            },
+            enlargeCenterPage: false,
           ),
           itemCount: controller.nowPlaying.length,
           itemBuilder: (context, index, realIndex) {
             return Stack(
               children: [
                 Image.network(
-                  'https://image.tmdb.org/t/p/w500${controller.nowPlaying[index].backdropPath}',
+                  'https://image.tmdb.org/t/p/w1280${controller.nowPlaying[index].backdropPath}',
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
@@ -220,35 +271,35 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 16,
-                  left: 16,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                    decoration: BoxDecoration(
-                      gradient: AppGradients.cinematic.withOpacity(.5),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(.5),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.play_circle, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text(
-                          "Now Playing",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 16,
+                //   left: 16,
+                //   child: Container(
+                //     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                //     decoration: BoxDecoration(
+                //       gradient: AppGradients.cinematic.withOpacity(.5),
+                //       borderRadius: BorderRadius.circular(20),
+                //       border: Border.all(
+                //         color: Colors.white.withOpacity(.5),
+                //         width: 1,
+                //       ),
+                //     ),
+                //     child: Row(
+                //       children: [
+                //         Icon(Icons.play_circle, color: Colors.white),
+                //         SizedBox(width: 8),
+                //         Text(
+                //           "Now Playing",
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 14,
+                //             fontWeight: FontWeight.bold,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             );
           },
@@ -257,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _drawer() {
+  Widget _drawer() {
     return Drawer(
       child: Column(
         children: [
@@ -319,7 +370,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _upcoming() {
+  Widget _upcoming() {
     return Obx(
       () => Container(
         height: 300,
@@ -338,7 +389,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _topRated() {
+  Widget _topRated() {
     return Obx(
       () => Container(
         height: 200,
