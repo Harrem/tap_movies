@@ -17,97 +17,94 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late HomeController controller = Get.find<HomeController>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: _drawer(),
-      body: RefreshIndicator(
-        onRefresh: () async => await controller.refreshAll(),
-        child: SafeArea(
-          top: false,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              Stack(
-                children: [
-                  _hero(),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.7),
-                            Colors.transparent,
-                          ],
+      body: Obx(
+        () => RefreshIndicator(
+          onRefresh: () async => await controller.refreshAll(),
+          child: SafeArea(
+            top: false,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  toolbarHeight: 80,
+                  expandedHeight: Get.height * .46,
+                  floating: true,
+                  pinned: true,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () => Get.toNamed('/search'),
+                    ),
+                  ],
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'TAP MOVIES',
+                        style: GoogleFonts.bebasNeue(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ),
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16, left: 8),
-                      child: Row(
-                        children: [
-                          // drawer
-                          IconButton(
-                            icon: Icon(Icons.menu, color: Colors.white),
-                            onPressed: () => Scaffold.of(context).openDrawer(),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Tap Movies",
-                                style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "Discover your next favorite movie",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white.withOpacity(0.9),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Text(
+                        'Discover the best movies',
+                        style: TextStyle(fontSize: 12),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Upcoming movies',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  centerTitle: false,
+                  flexibleSpace:
+                      controller.errorMessage.value.isNotEmpty &&
+                          !controller.isLoadingAll.value
+                      ? null
+                      : FlexibleSpaceBar(background: _hero()),
                 ),
-              ),
-              SizedBox(height: 10),
-              _upcoming(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Latest Movies',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: 10),
-              _topRated(),
-            ],
+                controller.errorMessage.value.isNotEmpty &&
+                        !controller.isLoadingAll.value
+                    ? SliverList(
+                        delegate: SliverChildListDelegate([
+                          CustomErrorWidget(
+                            errorMessage: controller.errorMessage.value,
+                            retryAction: () => controller.refreshAll(),
+                          ),
+                        ]),
+                      )
+                    : SliverList(
+                        delegate: SliverChildListDelegate([
+                          _section("Upcoming movies", _upcoming()),
+                          _section("Top rated movies", _topRated()),
+                          _section("Top rated movies", _topRated()),
+                        ]),
+                      ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _section(String title, Widget child) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(height: 12),
+        child,
+      ],
     );
   }
 
@@ -117,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         enabled: controller.isLoadingNowPlaying.value,
         child: CarouselSlider.builder(
           options: CarouselOptions(
-            height: Get.height * .7,
+            height: Get.height * .8,
             viewportFraction: 1.0,
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 3),
@@ -144,6 +141,23 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Icon(Icons.theaters_rounded, color: Colors.white),
                     );
                   },
+                ),
+                Positioned(
+                  top: 0,
+                  child: Container(
+                    height: Get.height * .3,
+                    width: Get.width,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.5),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
 
                 // shade from bottom
@@ -209,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         SizedBox(height: 8),
                         Row(
-                          spacing: 5,
+                          spacing: 4,
                           children: [
                             Icon(Icons.star, color: Colors.amber, size: 14),
                             Text(
@@ -371,69 +385,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _upcoming() {
-    return Obx(
-      () => Container(
-        height: 300,
-        child: Skeletonizer(
-          enabled: controller.isLoadingUpcomingMovies.value,
-          child: ListView.builder(
-            padding: EdgeInsets.only(left: 16),
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.upcomingMovies.length,
-            itemBuilder: (context, index) {
-              return MovieCard(movie: controller.upcomingMovies[index]);
-            },
-          ),
+    return SizedBox(
+      height: 200,
+      child: Skeletonizer(
+        enabled: controller.isLoadingUpcomingMovies.value,
+        child: ListView.builder(
+          padding: EdgeInsets.only(left: 16),
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.upcomingMovies.length,
+          itemBuilder: (context, index) {
+            return MovieCard(movie: controller.upcomingMovies[index]);
+          },
         ),
       ),
     );
   }
 
   Widget _topRated() {
-    return Obx(
-      () => Container(
-        height: 200,
-        child: Skeletonizer(
-          enabled: controller.isLoadingLatestMovies.value,
-          child: ListView.builder(
-            padding: EdgeInsets.only(left: 16),
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.latestMovies.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: Get.width * .3,
-                margin: EdgeInsets.only(right: 8),
-                child: Column(
-                  spacing: 8,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 150,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://image.tmdb.org/t/p/w500${controller.latestMovies[index].posterPath}',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    Text(
-                      controller.latestMovies[index].title,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+    return SizedBox(
+      height: 200,
+      child: Skeletonizer(
+        enabled: controller.isLoadingLatestMovies.value,
+        child: ListView.builder(
+          padding: EdgeInsets.only(left: 16),
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.latestMovies.length,
+          itemBuilder: (context, index) {
+            return MovieCard(movie: controller.latestMovies[index]);
+          },
         ),
       ),
     );

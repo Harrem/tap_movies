@@ -3,6 +3,22 @@ import 'package:tap_movies/model/backdrop_model.dart';
 import 'package:tap_movies/model/movie_model.dart';
 import 'package:tap_movies/service/api_service.dart';
 
+final fakeMovieModel = MovieModel(
+  adult: false,
+  genreIds: [],
+  id: 1,
+  originalLanguage: '--',
+  originalTitle: '-----',
+  overview: '-----',
+  popularity: 0,
+  releaseDate: '0000-00-00',
+  title: '-----',
+  video: false,
+  voteAverage: 0,
+  voteCount: 0,
+  posterPath: '',
+);
+
 class HomeController extends GetxController {
   RxList<MovieModel> nowPlaying = RxList<MovieModel>();
   RxList<MovieModel> upcomingMovies = RxList<MovieModel>();
@@ -23,6 +39,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    nowPlaying.add(fakeMovieModel);
+    upcomingMovies.add(fakeMovieModel);
+    latestMovies.add(fakeMovieModel);
     fetchNowPlaying();
     fetchUpcomingMovies();
     fetchLatestMovies();

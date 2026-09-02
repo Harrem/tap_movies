@@ -12,24 +12,28 @@ class CustomErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            errorMessage,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          if (retryAction != null) ...[
-            const SizedBox(height: 12),
-            SizedBox(
-              width: 144,
-              child: OutlinedButton(
-                onPressed: retryAction,
-                child: const Text('Retry'),
-              ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
+            if (retryAction != null) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: 144,
+                child: OutlinedButton(
+                  onPressed: retryAction,
+                  child: const Text('Retry'),
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

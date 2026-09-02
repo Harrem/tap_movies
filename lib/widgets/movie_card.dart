@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/model/movie_model.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MovieCard extends StatelessWidget {
   final MovieModel movie;
@@ -9,29 +10,44 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Get.toNamed('/movie/${movie.id}');
-      },
-      child: Container(
-        width: Get.width * .3,
-        margin: EdgeInsets.only(right: 8),
+    return Container(
+      width: 100,
+      margin: EdgeInsets.only(right: 8),
+      child: InkWell(
+        onTap: () {
+          Get.toNamed('/movie/${movie.id}');
+        },
         child: Column(
           spacing: 8,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 100,
-              height: 150,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                  ),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  'https://image.tmdb.org/t/p/w500${movie.posterPath}',
                   fit: BoxFit.cover,
+                  width: double.infinity,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: AppGradients.cinematic,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: AppGradients.cinematic,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.image, color: Colors.grey[600]),
+                    );
+                  },
                 ),
-                borderRadius: BorderRadius.circular(10),
               ),
             ),
             Text(

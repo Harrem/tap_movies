@@ -69,7 +69,6 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
     }
   }
@@ -79,7 +78,6 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId/videos');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
     }
   }
@@ -89,7 +87,6 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId/similar');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
     }
   }
@@ -99,7 +96,6 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId/recommendations');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
     }
   }
@@ -109,8 +105,25 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId/images');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
+    }
+  }
+
+  Future<Response> searchMovies(String query) async {
+    try {
+      var response = await dio.get(
+        '/search/movie',
+        queryParameters: {'query': query, 'include_adult': true},
+      );
+      return response;
+    } on DioException catch (e) {
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
+    } catch (e) {
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 
@@ -119,7 +132,6 @@ class ApiService extends GetxService {
       var response = await dio.get('/movie/$movieId');
       return response;
     } catch (e) {
-      Get.snackbar('Error', e.toString());
       rethrow;
     }
   }
