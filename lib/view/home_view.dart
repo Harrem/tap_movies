@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tap_movies/app_routes.dart';
 import 'package:tap_movies/controller/home_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
@@ -275,13 +276,25 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                         SizedBox(height: 8),
-                        Text(
-                          controller.nowPlaying[index].overview,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white.withOpacity(0.9),
+                        SizedBox(
+                          width: 128,
+                          height: 44,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 4,
+                              ),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            onPressed: () => Get.toNamed(
+                              '/movie/${controller.nowPlaying[index].id}',
+                            ),
+                            child: Text("More details"),
                           ),
                         ),
                       ],

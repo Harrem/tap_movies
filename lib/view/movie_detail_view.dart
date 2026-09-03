@@ -131,6 +131,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                                   Text(
                                     controller.movie.value?.title ?? '',
                                     style: TextStyle(
+                                      color: Colors.white,
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -201,10 +202,10 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                               ),
                               _section('Trailers', _buildTrailers()),
                               _section('Similar Movies', _similarMovies()),
-                              _section(
-                                'Recommendation Movies',
-                                _recommendationMovies(),
-                              ),
+                              // _section(
+                              //   'Recommendation Movies',
+                              //   _recommendationMovies(),
+                              // ),
                             ],
                           ),
                         ),
