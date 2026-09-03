@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:tap_movies/model/movie_model.dart';
-import 'package:tap_movies/service/api_service.dart';
+import 'package:tap_movies/core/service/api_service.dart';
 
 class SearchController extends GetxController {
   RxString query = ''.obs;

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart' hide Response;
-import 'package:tap_movies/helpers/dio_error_handler.dart';
+import 'package:tap_movies/core/helpers/dio_error_handler.dart';
 
 class ApiService extends GetxService {
   late Dio dio;
@@ -91,6 +91,15 @@ class ApiService extends GetxService {
     }
   }
 
+  Future<Response> getRecommendationMovies(int movieId) async {
+    try {
+      var response = await dio.get('/movie/$movieId/recommendations');
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Response> getMovieRecommendations(int movieId) async {
     try {
       var response = await dio.get('/movie/$movieId/recommendations');
@@ -131,8 +140,14 @@ class ApiService extends GetxService {
     try {
       var response = await dio.get('/movie/$movieId');
       return response;
+    } on DioException catch (e) {
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
     } catch (e) {
-      rethrow;
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 }

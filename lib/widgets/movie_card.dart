@@ -12,7 +12,7 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 100,
-      margin: EdgeInsets.only(right: 8),
+      margin: EdgeInsets.only(right: 16),
       child: InkWell(
         onTap: () {
           Get.toNamed('/movie/${movie.id}');

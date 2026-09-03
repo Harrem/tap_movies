@@ -1,10 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:tap_movies/controller/watchlist_controller.dart';
+import 'package:get/get.dart';
+import 'package:tap_movies/widgets/movie_card.dart';
 
-class Watchlist extends StatelessWidget {
+class Watchlist extends StatefulWidget {
   const Watchlist({super.key});
 
   @override
+  State<Watchlist> createState() => _WatchlistState();
+}
+
+class _WatchlistState extends State<Watchlist> {
+  final WatchlistController watchlistController =
+      Get.find<WatchlistController>();
+
+  @override
+  void initState() {
+    super.initState();
+    watchlistController.getWatchlist();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text('Watchlist')),
+      body: Obx(
+        () => GridView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: .6,
+            crossAxisCount: 2,
+          ),
+          itemCount: watchlistController.watchlist.length,
+          itemBuilder: (context, index) {
+            return MovieCard(movie: watchlistController.watchlist[index]);
+          },
+        ),
+      ),
+    );
   }
 }

@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tap_movies/model/movie_model.dart';
 
-class SqliteHelper extends GetxService {
+class SqliteService extends GetxService {
   Database? database;
 
   @override
@@ -23,10 +24,16 @@ class SqliteHelper extends GetxService {
         await db.execute('''
           CREATE TABLE watchList(
             id INTEGER PRIMARY KEY,
+            backdrop_path TEXT,
+            genre_ids TEXT,
+            original_title TEXT,
+            overview TEXT,
+            popularity REAL,
+            poster_path TEXT,
+            release_date TEXT,
             title TEXT,
-            posterPath TEXT,
-            releaseDate TEXT,
-            rating REAL
+            vote_average REAL,
+            vote_count INTEGER
           )
         ''');
       },
@@ -34,12 +41,14 @@ class SqliteHelper extends GetxService {
   }
 
   Future<void> addToWatchList(MovieModel movie) async {
-    await database!.insert('watchList', movie.toJson());
+    final json = movie.toJsonForSql();
+    debugPrint(json.toString());
+    await database!.insert('watchList', movie.toJsonForSql());
   }
 
   Future<List<MovieModel>> getWatchList() async {
     final list = await database!.query('watchList');
-    return list.map((json) => MovieModel.fromJson(json)).toList();
+    return list.map((json) => MovieModel.fromJsonSql(json)).toList();
   }
 
   Future<void> removeFromWatchList(int id) async {
@@ -53,5 +62,9 @@ class SqliteHelper extends GetxService {
       whereArgs: [id],
     );
     return list.isNotEmpty;
+  }
+
+  Future<void> clearWatchlist() async {
+    await database!.delete('watchList');
   }
 }

@@ -431,7 +431,7 @@ class AppThemes {
         selectedColor: AppColors.blue.withValues(alpha: 0.18),
 
         labelStyle: GoogleFonts.inter(
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: FontWeight.w500,
           color: AppColors.white,
         ),
