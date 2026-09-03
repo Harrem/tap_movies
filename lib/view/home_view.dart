@@ -347,7 +347,7 @@ class _MyHomePageState extends State<MyHomePage> {
             accountName: Text("Tap Movies"),
             accountEmail: Text("Discover your next favorite movie"),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage("https://i.pravatar.cc/150"),
+              backgroundImage: AssetImage("assets/images/logo.png"),
             ),
           ),
           ListTile(
@@ -358,17 +358,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             onTap: () {
               Get.toNamed('/watchlist');
-            },
-          ),
-          Divider(height: 2, indent: 16, endIndent: 16),
-          ListTile(
-            leading: Icon(Icons.settings_outlined, size: 22),
-            title: Text(
-              'Settings',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Get.toNamed('/settings');
             },
           ),
           Divider(height: 2, indent: 16, endIndent: 16),

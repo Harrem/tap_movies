@@ -35,12 +35,23 @@ class _SearchViewState extends State<SearchView> {
         () =>
             controller.errorMessage.value.isNotEmpty &&
                 !controller.isLoading.value
-            ? CustomErrorWidget(
-                errorMessage: controller.errorMessage.value,
-                // retryAction: () => controller.searchMovies(),
-              )
+            ? CustomErrorWidget(errorMessage: controller.errorMessage.value)
             : controller.isLoading.value
             ? Center(child: CircularProgressIndicator())
+            : (controller.query.isEmpty && controller.results.isEmpty)
+            ? Center(
+                child: Text(
+                  'Search movies',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              )
+            : (controller.query.isNotEmpty && controller.results.isEmpty)
+            ? Center(
+                child: Text(
+                  'No movies found',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              )
             : RefreshIndicator(
                 onRefresh: () async => await controller.searchMovies(),
                 child: SafeArea(

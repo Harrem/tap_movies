@@ -73,3 +73,9 @@ Instead of separate loading widgets, each controller pre-populates its reactive 
 3. Run with `flutter run`.
 
 > Get your free API key at [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
+
+---
+
+## AI Assistance Disclosure
+
+The animated splash screen (`lib/view/splash_view.dart`) was designed with the assistance of an AI coding tool. This includes the staggered animation sequence, glow orb layout, pulse ring effect, and progress bar. All other screens, controllers, services, models, and architectural decisions were written by hand.

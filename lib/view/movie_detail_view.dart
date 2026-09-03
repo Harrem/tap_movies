@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tap_movies/app/extensions/image_extension.dart';
 import 'package:tap_movies/controller/movie_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
+import 'package:tap_movies/core/service/api_endpoints.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
 
@@ -58,15 +59,14 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                       children: [
                         CarouselSlider(
                           options: CarouselOptions(
-                            height: Get.height * .5,
+                            height: double.infinity,
                             viewportFraction: 1,
                             autoPlay: true,
                             enlargeCenterPage: false,
                           ),
                           items: controller.backdrops.map((backdrop) {
                             return Image.network(
-                              'https://image.tmdb.org/t/p/w500${backdrop.filePath}',
-                              height: Get.height * .5,
+                              '${ApiEndPoints.imageUrl1280}${backdrop.filePath}',
                               fit: BoxFit.cover,
                               loadingBuilder:
                                   (context, child, loadingProgress) {
@@ -119,8 +119,8 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.network(
-                                  'https://image.tmdb.org/t/p/w500${controller.movie.value?.posterPath}',
-                                  height: 200,
+                                  '${ApiEndPoints.imageUrl500}${controller.movie.value?.posterPath}',
+                                  height: Get.height * .24,
                                   fit: BoxFit.cover,
                                 ).withDefaultOnError(),
                               ),
@@ -128,12 +128,15 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    controller.movie.value?.title ?? '',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: Get.width * .6,
+                                    child: Text(
+                                      controller.movie.value?.title ?? '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Row(
@@ -200,6 +203,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                                   color: Colors.grey,
                                 ),
                               ),
+                              _section('Photos', _buildPhotos()),
                               _section('Trailers', _buildTrailers()),
                               _section('Similar Movies', _similarMovies()),
                               // _section(
@@ -245,37 +249,87 @@ class _MovieDetailViewState extends State<MovieDetailView> {
     );
   }
 
-  Widget _buildTrailers() {
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: controller.trailers.length,
-        itemBuilder: (context, index) {
-          final trailer = controller.trailers[index];
+  Widget _buildPhotos() {
+    return controller.backdrops.isEmpty
+        ? Center(
+            child: Text(
+              'No photos found',
+              style: TextStyle(color: Colors.grey),
+            ),
+          )
+        : SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.backdrops.length,
+              itemBuilder: (context, index) {
+                final backdrop = controller.backdrops[index];
 
-          return GestureDetector(
-            onTap: () {
-              controller.launchTrailerUrl(trailer);
-            },
-            child: Container(
-              width: Get.width * 0.8,
-              margin: const EdgeInsets.only(right: 12),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-              child: Image.network(
-                trailer.getYoutubeThumbnail(),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[900],
-                  child: const Icon(Icons.broken_image, color: Colors.white54),
-                ),
-              ),
+                return Container(
+                  width: Get.width * 0.8,
+                  margin: const EdgeInsets.only(right: 12),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Image.network(
+                    backdrop.getBackdropUrl(),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[900],
+                      child: const Icon(
+                        Icons.broken_image,
+                        color: Colors.white54,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           );
-        },
-      ),
-    );
+  }
+
+  Widget _buildTrailers() {
+    return controller.trailers.isEmpty
+        ? Center(
+            child: Text(
+              'No trailers found',
+              style: TextStyle(color: Colors.grey),
+            ),
+          )
+        : SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.trailers.length,
+              itemBuilder: (context, index) {
+                final trailer = controller.trailers[index];
+
+                return Container(
+                  width: Get.width * 0.8,
+                  margin: const EdgeInsets.only(right: 12),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: NetworkImage(trailer.getYoutubeThumbnail()),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.launchTrailerUrl(trailer);
+                    },
+                    child: const Icon(
+                      Icons.play_arrow,
+                      size: 64,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
   }
 
   Widget _similarMovies() {
