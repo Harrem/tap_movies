@@ -9,14 +9,20 @@ class ApiService extends GetxService {
   late Dio dio;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    dio = Dio(
-      BaseOptions(
-        baseUrl: ApiEndPoints.baseUrl,
-        queryParameters: {'api_key': dotenv.env['API_KEY']},
-      ),
-    );
+    try {
+      await dotenv.load(fileName: ".env");
+      dio = Dio(
+        BaseOptions(
+          baseUrl: ApiEndPoints.baseUrl,
+          queryParameters: {'api_key': dotenv.env['API_KEY']},
+        ),
+      );
+    } catch (e) {
+      debugPrint('Failed to load .env file: $e');
+      dio = Dio(BaseOptions(baseUrl: ApiEndPoints.baseUrl));
+    }
 
     dio.interceptors.add(
       InterceptorsWrapper(

@@ -53,7 +53,7 @@ class DioErrorHandler implements Exception {
       case 400:
         return "The request was invalid. Please check your input.";
       case 401:
-        return "You're not authorized.";
+        return "You're not authorized. Either Api key is not provided or invalid.";
       case 403:
         return "You do not have permission to access this resource.";
       case 404:
