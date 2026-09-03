@@ -36,6 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   expandedHeight: Get.height * .46,
                   floating: true,
                   pinned: true,
+                  backgroundColor: AppColors.darkSurface,
+                  foregroundColor: Colors.white,
                   actions: [
                     IconButton(
                       icon: Icon(Icons.search),
@@ -48,13 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       Text(
                         'TAP MOVIES',
                         style: GoogleFonts.bebasNeue(
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         'Discover the best movies',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ],
                   ),

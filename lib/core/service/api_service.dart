@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:tap_movies/core/helpers/dio_error_handler.dart';
+import 'package:tap_movies/core/service/api_endpoints.dart';
 
 class ApiService extends GetxService {
   late Dio dio;
@@ -12,15 +13,34 @@ class ApiService extends GetxService {
     super.onInit();
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.themoviedb.org/3',
+        baseUrl: ApiEndPoints.baseUrl,
         queryParameters: {'api_key': dotenv.env['API_KEY']},
+      ),
+    );
+
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          debugPrint('Request: ${options.method} ${options.path}');
+          debugPrint('data: ${options.data}');
+          return handler.next(options);
+        },
+        onError: (DioException e, handler) async {
+          debugPrint('Error: ${e.response?.statusCode} ${e.response?.data}');
+          return handler.next(e);
+        },
+
+        onResponse: (response, handler) async {
+          debugPrint('Response: ${response.statusCode} ${response.data}');
+          return handler.next(response);
+        },
       ),
     );
   }
 
   Future<Response> getTopRatedMovies() async {
     try {
-      var response = await dio.get('/movie/top_rated');
+      var response = await dio.get(ApiEndPoints.topRatedMovies);
       return response;
     } on DioException catch (e) {
       debugPrint('Dio Error: ${e.message}');
@@ -36,7 +56,7 @@ class ApiService extends GetxService {
 
   Future<Response> getUpcomingMovies() async {
     try {
-      var response = await dio.get('/movie/upcoming');
+      var response = await dio.get(ApiEndPoints.upcomingMovies);
       return response;
     } on DioException catch (e) {
       // Convert the ugly DioException into our friendly local handler
@@ -51,7 +71,7 @@ class ApiService extends GetxService {
 
   Future<Response> getNowPlayingMovies() async {
     try {
-      var response = await dio.get('/movie/now_playing');
+      var response = await dio.get(ApiEndPoints.nowPlayingMovies);
       return response;
     } on DioException catch (e) {
       // Convert the ugly DioException into our friendly local handler
@@ -66,64 +86,7 @@ class ApiService extends GetxService {
 
   Future<Response> getMovieDetails(int movieId) async {
     try {
-      var response = await dio.get('/movie/$movieId');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> getMovieTrailers(int movieId) async {
-    try {
-      var response = await dio.get('/movie/$movieId/videos');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> getSimilarMovies(int movieId) async {
-    try {
-      var response = await dio.get('/movie/$movieId/similar');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> getRecommendationMovies(int movieId) async {
-    try {
-      var response = await dio.get('/movie/$movieId/recommendations');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> getMovieRecommendations(int movieId) async {
-    try {
-      var response = await dio.get('/movie/$movieId/recommendations');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> getMovieImages(int movieId) async {
-    try {
-      var response = await dio.get('/movie/$movieId/images');
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> searchMovies(String query) async {
-    try {
-      var response = await dio.get(
-        '/search/movie',
-        queryParameters: {'query': query, 'include_adult': true},
-      );
+      var response = await dio.get(ApiEndPoints.movieDetail(movieId));
       return response;
     } on DioException catch (e) {
       // Convert the ugly DioException into our friendly local handler
@@ -136,9 +99,48 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Response> getMovie(int movieId) async {
+  Future<Response> getMovieTrailers(int movieId) async {
     try {
-      var response = await dio.get('/movie/$movieId');
+      var response = await dio.get(ApiEndPoints.movieTrailers(movieId));
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> getSimilarMovies(int movieId) async {
+    try {
+      var response = await dio.get(ApiEndPoints.similarMovies(movieId));
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> getRecommendationMovies(int movieId) async {
+    try {
+      var response = await dio.get(ApiEndPoints.movieRecommendations(movieId));
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> getMovieImages(int movieId) async {
+    try {
+      var response = await dio.get(ApiEndPoints.movieImages(movieId));
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> searchMovies(String query) async {
+    try {
+      var response = await dio.get(
+        ApiEndPoints.searchMovies,
+        queryParameters: {'query': query},
+      );
       return response;
     } on DioException catch (e) {
       // Convert the ugly DioException into our friendly local handler

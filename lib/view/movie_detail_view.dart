@@ -39,7 +39,8 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                   expandedHeight: Get.height * .5,
                   floating: true,
                   pinned: true,
-                  title: Text(controller.movie.value?.title ?? ''),
+                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.darkSurface,
                   actions: [
                     IconButton(
                       icon: controller.isInWatchlist()
