@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,71 +40,93 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: _drawer(),
-      body: Obx(
-        () => RefreshIndicator(
-          onRefresh: () async => await controller.refreshAll(),
-          child: SafeArea(
-            top: false,
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  toolbarHeight: 80,
-                  expandedHeight: Get.height * .46,
-                  floating: true,
-                  pinned: true,
-                  backgroundColor: AppColors.darkSurface,
-                  foregroundColor: Colors.white,
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () => Get.toNamed('/search'),
-                    ),
-                  ],
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'TAP MOVIES',
-                        style: GoogleFonts.bebasNeue(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Discover the best movies',
-                        style: TextStyle(fontSize: 12, color: Colors.white),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        // Delegate the logic to the controller
+        final shouldExit = controller.handleBackPress();
+
+        if (shouldExit) {
+          await controller.exitApp();
+        } else {
+          // Keep UI actions like SnackBar in the View layer
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Press back again to exit'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: _drawer(),
+        body: Obx(
+          () => RefreshIndicator(
+            onRefresh: () async => await controller.refreshAll(),
+            child: SafeArea(
+              top: false,
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    toolbarHeight: 80,
+                    expandedHeight: Get.height * .46,
+                    floating: true,
+                    pinned: true,
+                    backgroundColor: AppColors.darkSurface,
+                    foregroundColor: Colors.white,
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () => Get.toNamed('/search'),
                       ),
                     ],
-                  ),
-                  centerTitle: false,
-                  flexibleSpace:
-                      controller.errorMessage.value.isNotEmpty &&
-                          !controller.isLoadingAll.value
-                      ? null
-                      : FlexibleSpaceBar(background: _hero()),
-                ),
-                controller.errorMessage.value.isNotEmpty &&
-                        !controller.isLoadingAll.value
-                    ? SliverList(
-                        delegate: SliverChildListDelegate([
-                          CustomErrorWidget(
-                            errorMessage: controller.errorMessage.value,
-                            retryAction: () => controller.refreshAll(),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'TAP MOVIES',
+                          style: GoogleFonts.bebasNeue(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ]),
-                      )
-                    : SliverList(
-                        delegate: SliverChildListDelegate([
-                          _section("Upcoming movies", _upcoming()),
-                          _section("Top rated movies", _topRated()),
-                          _section("Recommended movies", _recommendations()),
-                        ]),
-                      ),
-              ],
+                        ),
+                        Text(
+                          'Discover the best movies',
+                          style: TextStyle(fontSize: 12, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    centerTitle: false,
+                    flexibleSpace:
+                        controller.errorMessage.value.isNotEmpty &&
+                            !controller.isLoadingAll
+                        ? null
+                        : FlexibleSpaceBar(background: _hero()),
+                  ),
+                  controller.errorMessage.value.isNotEmpty &&
+                          !controller.isLoadingAll
+                      ? SliverList(
+                          delegate: SliverChildListDelegate([
+                            CustomErrorWidget(
+                              errorMessage: controller.errorMessage.value,
+                              retryAction: () => controller.refreshAll(),
+                            ),
+                          ]),
+                        )
+                      : SliverList(
+                          delegate: SliverChildListDelegate([
+                            _section("Upcoming movies", _upcoming()),
+                            _section("Top rated movies", _topRated()),
+                            _section("Discover movies", _discover()),
+                          ]),
+                        ),
+                ],
+              ),
             ),
           ),
         ),
@@ -402,17 +426,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _recommendations() {
+  Widget _discover() {
     return SizedBox(
       height: 200,
       child: Skeletonizer(
-        enabled: controller.isLoadingLatestMovies.value,
+        enabled: controller.isLoadingDiscoverMovies.value,
         child: ListView.builder(
           padding: EdgeInsets.only(left: 16),
           scrollDirection: Axis.horizontal,
-          itemCount: controller.latestMovies.length,
+          itemCount: controller.discoverMovies.length,
           itemBuilder: (context, index) {
-            return MovieCard(movie: controller.latestMovies[index]);
+            return MovieCard(movie: controller.discoverMovies[index]);
           },
         ),
       ),
@@ -423,13 +447,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return SizedBox(
       height: 200,
       child: Skeletonizer(
-        enabled: controller.isLoadingLatestMovies.value,
+        enabled: controller.isLoadingTopRatedMovies.value,
         child: ListView.builder(
           padding: EdgeInsets.only(left: 16),
           scrollDirection: Axis.horizontal,
-          itemCount: controller.latestMovies.length,
+          itemCount: controller.topRatedMovies.length,
           itemBuilder: (context, index) {
-            return MovieCard(movie: controller.latestMovies[index]);
+            return MovieCard(movie: controller.topRatedMovies[index]);
           },
         ),
       ),

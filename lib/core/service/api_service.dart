@@ -90,6 +90,21 @@ class ApiService extends GetxService {
     }
   }
 
+  Future<Response> getDiscoverMovies() async {
+    try {
+      var response = await dio.get(ApiEndPoints.discoverMovies);
+      return response;
+    } on DioException catch (e) {
+      // Convert the ugly DioException into our friendly local handler
+      final errorHandler = DioErrorHandler.fromDioException(e);
+
+      // Throw the human-readable message onward to your UI or state management
+      throw errorHandler.message;
+    } catch (e) {
+      throw "An unexpected error occurred. Please try again.";
+    }
+  }
+
   Future<Response> getMovieDetails(int movieId) async {
     try {
       var response = await dio.get(ApiEndPoints.movieDetail(movieId));
