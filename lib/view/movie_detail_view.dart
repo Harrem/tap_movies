@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tap_movies/app/extensions/image_extension.dart';
+import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/controller/movie_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/core/service/api_endpoints.dart';

@@ -87,7 +87,6 @@ class MovieController extends GetxController {
     isLoading.value = true;
     errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 2));
       final response = await apiService.getMovieDetails(movieId);
       if (response.statusCode == 200) {
         movie.value = MovieDetailModel.fromJson(response.data);

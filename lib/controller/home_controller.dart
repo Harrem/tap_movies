@@ -55,7 +55,6 @@ class HomeController extends GetxController {
     isLoadingNowPlaying.value = true;
     errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 3));
       final response = await apiService.getNowPlayingMovies();
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['results'];
@@ -74,8 +73,6 @@ class HomeController extends GetxController {
     isLoadingUpcomingMovies.value = true;
     errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 3));
-
       final response = await apiService.getUpcomingMovies();
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['results'];
@@ -107,7 +104,6 @@ class HomeController extends GetxController {
     isLoadingLatestMovies.value = true;
     errorMessage.value = "";
     try {
-      await Future.delayed(Duration(seconds: 3));
       final response = await apiService.getTopRatedMovies();
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = response.data['results'];

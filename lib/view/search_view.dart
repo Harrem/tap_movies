@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
-import 'package:tap_movies/controller/search_controller.dart';
+import 'package:tap_movies/controller/search_movie_controller.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
 
@@ -13,7 +13,7 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
-  final controller = Get.put(SearchController());
+  final controller = Get.put(SearchMovieController());
   var debouncer = Debouncer(delay: const Duration(milliseconds: 500));
 
   @override

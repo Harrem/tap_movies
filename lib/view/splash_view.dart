@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tap_movies/app_routes.dart';
+import 'package:tap_movies/app/app_routes.dart';
+import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 
 class SplashView extends StatefulWidget {
@@ -132,11 +133,7 @@ class _SplashViewState extends State<SplashView>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  AppColors.navy,
-                  Color(0xFF071B3D),
-                  Color(0xFF03091A),
-                ],
+                colors: [AppColors.navy, Color(0xFF071B3D), Color(0xFF03091A)],
               ),
             ),
             child: Stack(

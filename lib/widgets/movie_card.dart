@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tap_movies/app/theme/app_gradients.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/model/movie_model.dart';
 import 'package:skeletonizer/skeletonizer.dart';
