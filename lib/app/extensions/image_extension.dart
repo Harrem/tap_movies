@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tap_movies/app/theme/app_gradients.dart';
-import 'package:tap_movies/controller/theme_controller.dart';
 
+// an extention for image network with loading and error handling
 extension ImageExt on Image {
   Widget withDefaultOnError({String? defaultImagePath}) {
     return Image.network(

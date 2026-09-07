@@ -10,12 +10,12 @@ import 'package:tap_movies/core/service/api_service.dart';
 class AppBindings extends Bindings {
   @override
   void dependencies() {
+    Get.put(ThemeController(), permanent: true);
     Get.put(ConnectivityController(), permanent: true);
+    Get.put(ApiService(), permanent: true);
+    Get.put(SqliteService(), permanent: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => MovieController());
-    Get.lazyPut(() => ApiService());
-    Get.put(() => ThemeController(), permanent: true);
-    Get.put(SqliteService(), permanent: true);
     Get.put(WatchlistController(), permanent: true);
   }
 }

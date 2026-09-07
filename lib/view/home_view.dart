@@ -3,13 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:tap_movies/app/app_routes.dart';
 import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/app/theme/app_gradients.dart';
 import 'package:tap_movies/controller/home_controller.dart';
 import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
+
+/* 
+This is the home view of the application that displays the list of movies 
+in the home screen. It uses custom sliver app bar with sliver list and sliver grid 
+to display the data to elevate ui and ux.
+
+it has three main sections: now playing movies, top rated movies, and similar movies
+it also has a drawer that displays the list of movies in the home screen.
+it also has a search icon in the app bar that navigates to the search view.
+
+the error widget and empty widget are also customized to display the data to elevate ui and ux.
+
+the theme controller is used to switch between dark and light mode.
+*/
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

@@ -5,10 +5,16 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tap_movies/app/extensions/image_extension.dart';
 import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/controller/movie_controller.dart';
-import 'package:tap_movies/controller/theme_controller.dart';
 import 'package:tap_movies/core/service/api_endpoints.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
+
+/* 
+This is a movie detail view that displays the details of a movie, 
+including the movie's title, overview, images, trailers, similar movies, 
+and recommendation movies. 
+it uses custom sliver app bar with sliver list and sliver grid to display the data to elevate ui and ux.
+*/
 
 class MovieDetailView extends StatefulWidget {
   const MovieDetailView({super.key});
