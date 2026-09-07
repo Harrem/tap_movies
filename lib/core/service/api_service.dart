@@ -5,6 +5,11 @@ import 'package:get/get.dart' hide Response;
 import 'package:tap_movies/core/helpers/dio_error_handler.dart';
 import 'package:tap_movies/core/service/api_endpoints.dart';
 
+/* we don't need repositories for such small scale app that's why
+   we directly implement fetching movies from ApiService
+   instead of using multiple layers of abstraction.
+*/
+
 class ApiService extends GetxService {
   late Dio dio;
 
