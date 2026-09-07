@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tap_movies/controller/watchlist_controller.dart';
 import 'package:tap_movies/model/backdrop_model.dart';
@@ -173,7 +175,22 @@ class MovieController extends GetxController {
 
     try {
       if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
+        Get.dialog(
+          AlertDialog(
+            title: Text("Watch Trailer"),
+            content: Text("Do you want to open Youtube to watch this trailer?"),
+            actions: [
+              TextButton(onPressed: () => Get.back(), child: Text("No")),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  launchUrl(url, mode: LaunchMode.externalApplication);
+                },
+                child: Text("Yes"),
+              ),
+            ],
+          ),
+        );
       } else {
         Get.rawSnackbar(
           title: 'Error',

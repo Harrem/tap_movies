@@ -304,14 +304,23 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  child: GestureDetector(
-                    onTap: () {
-                      controller.launchTrailerUrl(trailer);
-                    },
-                    child: const Icon(
-                      Icons.play_arrow,
-                      size: 64,
-                      color: Colors.white,
+                  child: Center(
+                    child: SizedBox.square(
+                      dimension: 84,
+                      child: IconButton.filledTonal(
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.black54,
+                          shape: CircleBorder(),
+                        ),
+                        onPressed: () {
+                          controller.launchTrailerUrl(trailer);
+                        },
+                        icon: const Icon(
+                          Icons.play_arrow,
+                          size: 64,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 );
