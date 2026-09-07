@@ -47,15 +47,15 @@ class AppThemes {
       textTheme: textTheme,
 
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.lightBackground,
-        foregroundColor: AppColors.textPrimary,
+        backgroundColor: AppColors.navyLight,
+        foregroundColor: AppColors.white,
         elevation: 0,
         centerTitle: false,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: GoogleFonts.spaceGrotesk(
           fontSize: 21,
           fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
+          color: AppColors.white,
         ),
       ),
 
@@ -74,8 +74,8 @@ class AppThemes {
         fillColor: AppColors.lightSurfaceElevated,
 
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 16,
+          horizontal: 16,
+          vertical: 12,
         ),
 
         border: OutlineInputBorder(

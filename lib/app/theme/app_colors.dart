@@ -15,6 +15,9 @@ class AppColors {
   static const gold = Color(0xFFFFC94A);
   static const orange = Color(0xFFFF7A18);
 
+  // Input filled color
+  static const inputFilled = Color(0xFF1E2A42);
+
   // Dark surfaces
   static const darkBackground = Color(0xFF030712);
   static const darkSurface = Color(0xFF0A1122);

@@ -24,11 +24,7 @@ class _WatchlistState extends State<Watchlist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Watchlist', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppColors.darkSurfaceElevated,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: Text('Watchlist')),
       body: Obx(
         () => watchlistController.watchlist.isEmpty ? _emptyState() : _list(),
       ),

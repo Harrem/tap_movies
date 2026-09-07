@@ -6,10 +6,10 @@ import 'package:tap_movies/app/theme/app_gradients.dart';
 extension ImageExt on Image {
   Widget withDefaultOnError({String? defaultImagePath}) {
     return Image.network(
-      (this.image as NetworkImage).url,
+      (image as NetworkImage).url,
       height: height,
       width: width,
-      fit: this.fit,
+      fit: fit,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
         return Container(

@@ -37,7 +37,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
     return Scaffold(
       body: Obx(
         () => Skeletonizer(
-          ignoreContainers: true,
+          // ignoreContainers: true,
           enabled: controller.isLoading.value,
           child: RefreshIndicator(
             onRefresh: () async => await controller.refreshPage(),
@@ -47,8 +47,6 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                   expandedHeight: Get.height * .5,
                   floating: true,
                   pinned: true,
-                  foregroundColor: Colors.white,
-                  backgroundColor: AppColors.darkSurface,
                   actions: [
                     IconButton(
                       icon: controller.isInWatchlist()
@@ -75,23 +73,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                             return Image.network(
                               '${ApiEndPoints.imageUrl1280}${backdrop.filePath}',
                               fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Container(
-                                      color: Colors.grey,
-                                      height: Get.height * .5,
-                                      child: Center(child: Icon(Icons.error)),
-                                    );
-                                  },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey,
-                                  height: Get.height * .5,
-                                  child: Center(child: Icon(Icons.error)),
-                                );
-                              },
-                            );
+                            ).withDefaultOnError();
                           }).toList(),
                         ),
                         Container(
@@ -123,8 +105,18 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                           left: 16,
                           child: Row(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
+                              Container(
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.3),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
                                 child: Image.network(
                                   '${ApiEndPoints.imageUrl500}${controller.movie.value?.posterPath}',
                                   height: Get.height * .24,
@@ -189,36 +181,17 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                         ),
                       )
                     : SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildGenreChips(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildGenreChips(),
 
-                              Text(
-                                'Overview',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                controller.movie.value?.overview ?? '',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              _section('Photos', _buildPhotos()),
-                              _section('Trailers', _buildTrailers()),
-                              _section('Similar Movies', _similarMovies()),
-                              // _section(
-                              //   'Recommendation Movies',
-                              //   _recommendationMovies(),
-                              // ),
-                            ],
-                          ),
+                            _section("Overview", _buildOverview()),
+                            _section('Photos', _buildPhotos()),
+                            _section('Trailers', _buildTrailers()),
+                            _section('Similar Movies', _similarMovies()),
+                            SafeArea(child: SizedBox()),
+                          ],
                         ),
                       ),
               ],
@@ -247,12 +220,25 @@ class _MovieDetailViewState extends State<MovieDetailView> {
   }
 
   Widget _buildGenreChips() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 4,
-      children: controller.movie.value!.genres.map((genre) {
-        return _chip(genre.name, null);
-      }).toList(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        children: controller.movie.value!.genres.map((genre) {
+          return _chip(genre.name, null);
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildOverview() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        controller.movie.value?.overview ?? '',
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      ),
     );
   }
 
@@ -267,6 +253,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
         : SizedBox(
             height: 200,
             child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
               itemCount: controller.backdrops.length,
               itemBuilder: (context, index) {
@@ -282,14 +269,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
                   child: Image.network(
                     backdrop.getBackdropUrl(),
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey[900],
-                      child: const Icon(
-                        Icons.broken_image,
-                        color: Colors.white54,
-                      ),
-                    ),
-                  ),
+                  ).withDefaultOnError(),
                 );
               },
             ),
@@ -308,6 +288,7 @@ class _MovieDetailViewState extends State<MovieDetailView> {
             height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 16),
               itemCount: controller.trailers.length,
               itemBuilder: (context, index) {
                 final trailer = controller.trailers[index];

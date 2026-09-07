@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
+import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/controller/search_movie_controller.dart';
 import 'package:tap_movies/widgets/error_widget.dart';
 import 'package:tap_movies/widgets/movie_card.dart';
@@ -20,15 +21,29 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          // controller: TextEditingController(text: controller.query.value),
-          onChanged: (value) {
-            debouncer.call(() {
-              controller.query.value = value;
-              controller.searchMovies();
-            });
-          },
-          decoration: InputDecoration(hintText: 'Search movies'),
+        toolbarHeight: Get.height * .1,
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: TextField(
+            autofocus: true,
+            onChanged: (value) {
+              debouncer.call(() {
+                controller.query.value = value;
+                controller.searchMovies();
+              });
+            },
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Search movies',
+              filled: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              fillColor: AppColors.inputFilled,
+            ),
+          ),
         ),
       ),
       body: Obx(

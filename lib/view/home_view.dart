@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tap_movies/app/extensions/image_extension.dart';
 import 'package:tap_movies/app/theme/app_colors.dart';
 import 'package:tap_movies/app/theme/app_gradients.dart';
 import 'package:tap_movies/controller/home_controller.dart';
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         delegate: SliverChildListDelegate([
                           _section("Upcoming movies", _upcoming()),
                           _section("Top rated movies", _topRated()),
-                          _section("Top rated movies", _topRated()),
+                          _section("Recommended movies", _recommendations()),
                         ]),
                       ),
               ],
@@ -150,17 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: AppGradients.cinematic,
-                      ),
-                      child: Icon(Icons.theaters_rounded, color: Colors.white),
-                    );
-                  },
-                ),
+                ).withDefaultOnError(),
                 Positioned(
                   top: 0,
                   child: Container(
@@ -219,17 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             'https://image.tmdb.org/t/p/w500${controller.nowPlaying[index].posterPath}',
                             height: 150,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                height: 150,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  gradient: AppGradients.cinematic,
-                                ),
-                                child: Icon(Icons.movie, color: Colors.white),
-                              );
-                            },
-                          ),
+                          ).withDefaultOnError(),
                         ),
                         SizedBox(width: 10),
                         Text(
@@ -415,6 +396,23 @@ class _MyHomePageState extends State<MyHomePage> {
           itemCount: controller.upcomingMovies.length,
           itemBuilder: (context, index) {
             return MovieCard(movie: controller.upcomingMovies[index]);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _recommendations() {
+    return SizedBox(
+      height: 200,
+      child: Skeletonizer(
+        enabled: controller.isLoadingLatestMovies.value,
+        child: ListView.builder(
+          padding: EdgeInsets.only(left: 16),
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.latestMovies.length,
+          itemBuilder: (context, index) {
+            return MovieCard(movie: controller.latestMovies[index]);
           },
         ),
       ),
